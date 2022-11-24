@@ -15,6 +15,8 @@
 ;;pretty please
 ;;(load-theme 'doom-one)
 ;;set later after doom themes are installed
+(set-face-attribute 'default nil :font "Ubuntu Mono" :height 110)
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 110)
 
 ;;make escape quit a prompt
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -126,7 +128,12 @@
   (lw/leader-keys
    "t" '(:ignore t :which-key "toggles")
    "tt" '(counsel-load-theme :which-key "choose theme")
+   "o" '(:ignore o :which-key "org")
+   "oc" '(org-capture :which-key "capture a thought")
+   "X" '(org-capture :which-key "capture a thought")
    "f" '(:ignore f :which-key "file")
+   "g" '(:ignore g :which-key "git")
+   "gg" '(magit-status :which-key "git status")
    "." '(counsel-find-file :which-key "open file")
    "b" '(:ignore b :which-key "buffer")
    "b k" '(kill-current-buffer :which-key "kill buffer")
@@ -162,16 +169,37 @@
   :after evil
   :config
   (evil-collection-init))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(evil-collection which-key use-package rainbow-delimiters ivy-rich helpful general evil doom-themes doom-modeline counsel all-the-icons)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+(use-package magit)
+
+(defun lw/org-mode-setup ()
+    (org-indent-mode))
+
+(use-package org
+  :hook (org-mode . lw/org-mode-setup)
+  :config
+  (setq org-directory '("~/org")
+        org-agenda-files '("todo.org" "notes.org" "journal.org")
+        org-default-notes-file '("~/org/notes.org")
+        org-capture-templates
+	'(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+	   "* TODO %?\n %i\n %a")
+	  ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+	   "* %?\nEntered on %U\n %i\n %a")))
+        org-ellipsis " ↓"
+	org-hide-emphasis-markers t
+	org-startup-indented t)
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("→" "↘" "↝" "⇒")))
+
+(with-eval-after-load 'org-faces
+  (dolist (face '((org-level-1 . 1.4)
+    	  	  (org-level-2 . 1.3)
+    	  	  (org-level-3 . 1.2)
+    	  	  (org-level-4 . 1.1)
+    	  	  (org-level-5 . 1.05)))
+    (set-face-attribute (car face) nil :font "Pink Chicken Bold" :weight 'bold :height (cdr face))))
