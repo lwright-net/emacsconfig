@@ -129,6 +129,9 @@
    "t" '(:ignore t :which-key "toggles")
    "tt" '(counsel-load-theme :which-key "choose theme")
 
+   "q" '(:ignore q :which-key "quit")
+   "qq" '(save-buffers-kill-terminal :which-key "quit emacs")
+
    "d" '(:ignore d :which-key "dired")
    "dd" '(dired :which-key "open dired")
 
