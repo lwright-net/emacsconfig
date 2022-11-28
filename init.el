@@ -25,18 +25,18 @@
 (column-number-mode)
 (global-display-line-numbers-mode t)
 ;;and turn off for some modes
-(dolist (mode '(org-mode-hook
-		term-mode-hook
-		eshell-mode-hook))
+(dolist (mode '(;;org-mode-hook
+                term-mode-hook
+                eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;get some packages up in here
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org"   . "https://orgmode.org/elpa/")
-			 ("elpa"  . "https://elpa.gnu.org/packages/")))
-			 
+                         ("org"   . "https://orgmode.org/elpa/")
+                         ("elpa"  . "https://elpa.gnu.org/packages/")))
+
 (package-initialize)
 ;;update if out of date
 (unless package-archive-contents
@@ -53,18 +53,18 @@
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
-	 :map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-l" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
@@ -128,13 +128,26 @@
   (lw/leader-keys
    "t" '(:ignore t :which-key "toggles")
    "tt" '(counsel-load-theme :which-key "choose theme")
+
    "o" '(:ignore o :which-key "org")
    "oc" '(org-capture :which-key "capture a thought")
+   "oa" '(org-agenda :which-key "agenda")
    "X" '(org-capture :which-key "capture a thought")
-   "f" '(:ignore f :which-key "file")
+
    "g" '(:ignore g :which-key "git")
    "gg" '(magit-status :which-key "git status")
+
    "." '(counsel-find-file :which-key "open file")
+
+   "w" '(:ignore w :which-key "window")
+   "ws" '(split-window-below :which-key "split window")
+   "wv" '(split-window-right :which-key "vertical split window")
+   "wc" '(delete-window :which-key "close window")
+   "wk" '(windmove-up :which-key "move window above")
+   "wj" '(windmove-down :which-key "move window below")
+   "wh" '(windmove-left :which-key "move window left")
+   "wl" '(windmove-right :which-key "move window right")
+
    "b" '(:ignore b :which-key "buffer")
    "b k" '(kill-current-buffer :which-key "kill buffer")
    "b i" '(ibuffer :which-key "interactive buffer")
@@ -144,8 +157,8 @@
 ;;be EVIL
 (defun lw/evil-hook ()
   (dolist (mode '(custom-mode
-		  eshell-mode
-		  term-mode))
+                  eshell-mode
+                  term-mode))
     (add-to-list 'evil-emacs-state-modes mode)))
 
 (use-package evil
@@ -179,16 +192,27 @@
   :hook (org-mode . lw/org-mode-setup)
   :config
   (setq org-directory '("~/org")
-        org-agenda-files '("todo.org" "notes.org" "journal.org")
+        org-agenda-files '("~/org/todo.org" "~/org/notes.org" "~/org/journal.org")
         org-default-notes-file '("~/org/notes.org")
         org-capture-templates
-	'(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-	   "* TODO %?\n %i\n %a")
-	  ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
-	   "* %?\nEntered on %U\n %i\n %a")))
+        '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+           "* TODO %?\n %i\n %a")
+          ("n" "Note" entry (file+headline "~/org/notes.org" "Notes")
+           "* NOTE %?\n %i\n %a")
+          ("i" "Idea" entry (file+headline "~/org/notes.org" "Ideas")
+           "* IDEA %?\n %i\n %a")
+          ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+           "* %?\nEntered on %U\n %i\n %a")))
         org-ellipsis " ↓"
-	org-hide-emphasis-markers t
-	org-startup-indented t)
+        org-hide-emphasis-markers t
+        org-startup-indented t
+        (add-to-list 'org-modules 'org-tempo t)
+        (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+        (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+        (add-to-list 'org-structure-template-alist '("py" . "src python"))
+        (org-babel-do-load-languages
+         'org-babel-load-languages '((python . t))))
+
 
 (use-package org-bullets
   :after org
@@ -198,8 +222,12 @@
 
 (with-eval-after-load 'org-faces
   (dolist (face '((org-level-1 . 1.4)
-    	  	  (org-level-2 . 1.3)
-    	  	  (org-level-3 . 1.2)
-    	  	  (org-level-4 . 1.1)
-    	  	  (org-level-5 . 1.05)))
+                  (org-level-2 . 1.3)
+                  (org-level-3 . 1.2)
+                  (org-level-4 . 1.1)
+                  (org-level-5 . 1.05)))
     (set-face-attribute (car face) nil :font "Pink Chicken Bold" :weight 'bold :height (cdr face))))
+
+(use-package org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
