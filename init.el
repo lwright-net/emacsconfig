@@ -129,6 +129,9 @@
    "t" '(:ignore t :which-key "toggles")
    "tt" '(counsel-load-theme :which-key "choose theme")
 
+   "d" '(:ignore d :which-key "dired")
+   "dd" '(dired :which-key "open dired")
+
    "o" '(:ignore o :which-key "org")
    "oc" '(org-capture :which-key "capture a thought")
    "oa" '(org-agenda :which-key "agenda")
@@ -231,3 +234,18 @@
 (use-package org-auto-tangle
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
+
+(evil-define-key 'normal dired-mode-map
+  (kbd "M-RET") 'dired-display-file
+  (kbd "h") 'dired-up-directory
+  (kbd "l") 'dired-find-file)
+
+(use-package all-the-icons-dired)
+
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-startup-banner "~/.emacs.d/emacs-logo-green.png"))
