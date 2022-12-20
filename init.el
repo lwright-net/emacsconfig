@@ -30,6 +30,11 @@
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
+;;turn of wrapping
+(setq truncate-lines t)
+;;turn on auto revert
+(auto-revert-mode)
+
 ;;get some packages up in here
 (require 'package)
 
@@ -138,6 +143,7 @@
    "o" '(:ignore o :which-key "org")
    "oc" '(org-capture :which-key "capture a thought")
    "oa" '(org-agenda :which-key "agenda")
+   "ot" '(org-todo :which-key "toggle todo item")
    "X" '(org-capture :which-key "capture a thought")
 
    "g" '(:ignore g :which-key "git")
@@ -200,31 +206,49 @@
   (setq org-directory '("~/org")
         org-agenda-files '("~/org/todo.org" "~/org/notes.org" "~/org/journal.org")
         org-default-notes-file '("~/org/notes.org")
+        org-log-done 'note
         org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-           "* TODO %?\n %i\n %a")
-          ("n" "Note" entry (file+headline "~/org/notes.org" "Notes")
-           "* NOTE %?\n %i\n %a")
+           "\n* TODO %?\n %i\n %a")
+          ("d" "Todo with time" entry (file+olp+datetree "~/org/todo.org" "Scheduled Tasks")
+           "\n* TODO %?\n %i\n SCHEDULED: %^t\n%a")
+          ("n" "Notes")
+          ("nn" "Note" entry (file+headline "~/org/notes.org" "Notes")
+           "\n* %?\n %i\n")
+          ("nc" "Note for CMD and PS" entry (file+headline "~/org/notes.org" "Useful ~CMD~ and ~PS~ commands")
+           "\n* %?\n %i\n")
+          ("nr" "Note for Registry hacks" entry (file+headline "~/org/notes.org" "Registry hacks/tricks")
+           "\n* %?\n %i\n")
           ("i" "Idea" entry (file+headline "~/org/notes.org" "Ideas")
-           "* IDEA %?\n %i\n %a")
+           "\n* IDEA %?\n %i\n %a")
           ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
-           "* %?\nEntered on %U\n %i\n %a")))
+           "\n* %?\nEntered on %U\n %i\n %a"))
         org-ellipsis " ↓"
         org-hide-emphasis-markers t
-        org-startup-indented t
+        org-startup-indented t)
         (add-to-list 'org-modules 'org-tempo t)
         (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
         (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
         (add-to-list 'org-structure-template-alist '("py" . "src python"))
+        (add-to-list 'org-structure-template-alist '("ps" . "src powershell"))
         (org-babel-do-load-languages
          'org-babel-load-languages '((python . t))))
 
+(require 'ox-latex)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+(setq org-latex-minted-options '(("breaklines" "true")
+                               ("breakanywhere" "true")))
 
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("→" "↘" "↝" "⇒")))
+  (org-bullets-bullet-list '(">" ">" ">" ">")))
 
 (with-eval-after-load 'org-faces
   (dolist (face '((org-level-1 . 1.4)
