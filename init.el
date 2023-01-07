@@ -239,7 +239,8 @@
           (add-to-list 'org-structure-template-alist '("ps" . "src powershell"))
           (org-babel-do-load-languages
            'org-babel-load-languages '((python . t)
-                                       (shell . t))))
+                                       (shell . t)
+                                       (haskell .t))))
 
 (require 'ox-latex)
 (add-to-list 'org-latex-packages-alist '("" "minted"))
