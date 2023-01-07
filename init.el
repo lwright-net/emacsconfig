@@ -71,10 +71,15 @@
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill))
   :config
+  (setq ivy-initial-inputs-alist nil)
   (ivy-mode 1))
 
-(use-package ivy-rich)
-(ivy-rich-mode 1)
+;;(use-package ivy-rich)
+;;(ivy-rich-mode 1)
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :config (all-the-icons-ivy-rich-mode 1))
 
 ;;setup doom-modeline
 (use-package doom-modeline
@@ -184,6 +189,7 @@
   ;;(evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-normal-state-map (kbd "/") 'swiper)
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
@@ -198,41 +204,42 @@
 (use-package magit)
 
 (defun lw/org-mode-setup ()
-    (org-indent-mode))
+      (org-indent-mode))
 
-(use-package org
-  :hook (org-mode . lw/org-mode-setup)
-  :config
-  (setq org-directory '("~/org")
-        org-agenda-files '("~/org/todo.org" "~/org/notes.org" "~/org/journal.org")
-        org-default-notes-file '("~/org/notes.org")
-        org-log-done 'note
-        org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-           "\n* TODO %?\n %i\n %a")
-          ("d" "Todo with time" entry (file+olp+datetree "~/org/todo.org" "Scheduled Tasks")
-           "\n* TODO %?\n %i\n SCHEDULED: %^t\n%a")
-          ("n" "Notes")
-          ("nn" "Note" entry (file+headline "~/org/notes.org" "Notes")
-           "\n* %?\n %i\n")
-          ("nc" "Note for CMD and PS" entry (file+headline "~/org/notes.org" "Useful ~CMD~ and ~PS~ commands")
-           "\n* %?\n %i\n")
-          ("nr" "Note for Registry hacks" entry (file+headline "~/org/notes.org" "Registry hacks/tricks")
-           "\n* %?\n %i\n")
-          ("i" "Idea" entry (file+headline "~/org/notes.org" "Ideas")
-           "\n* IDEA %?\n %i\n %a")
-          ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
-           "\n* %?\nEntered on %U\n %i\n %a"))
-        org-ellipsis " ↓"
-        org-hide-emphasis-markers t
-        org-startup-indented t)
-        (add-to-list 'org-modules 'org-tempo t)
-        (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-        (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-        (add-to-list 'org-structure-template-alist '("py" . "src python"))
-        (add-to-list 'org-structure-template-alist '("ps" . "src powershell"))
-        (org-babel-do-load-languages
-         'org-babel-load-languages '((python . t))))
+  (use-package org
+    :hook (org-mode . lw/org-mode-setup)
+    :config
+    (setq org-directory '("~/org")
+          org-agenda-files '("~/org/todo.org" "~/org/notes.org" "~/org/journal.org")
+          org-default-notes-file '("~/org/notes.org")
+          org-log-done 'note
+          org-capture-templates
+          '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+             "\n* TODO %?\n %i\n %a")
+            ("d" "Todo with time" entry (file+olp+datetree "~/org/todo.org" "Scheduled Tasks")
+             "\n* TODO %?\n %i\n SCHEDULED: %^t\n%a")
+            ("n" "Notes")
+            ("nn" "Note" entry (file+headline "~/org/notes.org" "Notes")
+             "\n* %?\n %i\n")
+            ("nc" "Note for CMD and PS" entry (file+headline "~/org/notes.org" "Useful ~CMD~ and ~PS~ commands")
+             "\n* %?\n %i\n")
+            ("nr" "Note for Registry hacks" entry (file+headline "~/org/notes.org" "Registry hacks/tricks")
+             "\n* %?\n %i\n")
+            ("i" "Idea" entry (file+headline "~/org/notes.org" "Ideas")
+             "\n* IDEA %?\n %i\n %a")
+            ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+             "\n* %?\nEntered on %U\n %i\n %a"))
+          org-ellipsis " ↓"
+          org-hide-emphasis-markers t
+          org-startup-indented t)
+          (add-to-list 'org-modules 'org-tempo t)
+          (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+          (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+          (add-to-list 'org-structure-template-alist '("py" . "src python"))
+          (add-to-list 'org-structure-template-alist '("ps" . "src powershell"))
+          (org-babel-do-load-languages
+           'org-babel-load-languages '((python . t)
+                                       (shell . t))))
 
 (require 'ox-latex)
 (add-to-list 'org-latex-packages-alist '("" "minted"))
