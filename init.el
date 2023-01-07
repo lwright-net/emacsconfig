@@ -284,3 +284,6 @@
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-startup-banner "~/.emacs.d/emacs-logo-green.png"))
+
+(use-package sudo-edit
+  :ensure t)

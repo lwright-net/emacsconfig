@@ -385,3 +385,14 @@ So I can have something nice to look at when I start emacs.
     (setq dashboard-startup-banner "~/.emacs.d/emacs-logo-green.png"))
 
 #+end_src
+
+* sudo-edit
+=sudo-edit= is useful for when you need super user rights to write a file, but already have
+a buffer open for that file.
+
+#+begin_src emacs-lisp
+
+  (use-package sudo-edit
+    :ensure t)
+  
+#+end_src
