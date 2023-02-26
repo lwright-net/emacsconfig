@@ -24,6 +24,7 @@
 ;;set line numbers
 (column-number-mode)
 (global-display-line-numbers-mode t)
+(setq display-line-numbers 'relative)
 ;;and turn off for some modes
 (dolist (mode '(;;org-mode-hook
                 term-mode-hook
