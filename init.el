@@ -34,6 +34,8 @@
 (setq truncate-lines t)
 ;;turn on auto revert
 (auto-revert-mode)
+;;keep my folders clean
+(setq make-backup-files nil)
 
 ;;get some packages up in here
 (require 'package)
@@ -150,6 +152,9 @@
    "oa" '(org-agenda :which-key "agenda")
    "ot" '(org-todo :which-key "toggle todo item")
    "X" '(org-capture :which-key "capture a thought")
+
+   "m" '(:ignore m :which-key "mail")
+   "mc" '(mu4e-compose-new :which-key "new email")
 
    "g" '(:ignore g :which-key "git")
    "gg" '(magit-status :which-key "git status")
@@ -287,3 +292,39 @@
 
 (use-package sudo-edit
   :ensure t)
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+
+(use-package mu4e
+  :ensure nil
+  :config
+  (setq mu4e-change-filenames-when-moving t)
+
+  (setq mu4e-update-interval (* 5 60))
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-maildir "~/mail")
+
+  (setq mu4e-contexts
+        (list
+         (make-mu4e-context
+          :name "somenull"
+          :vars '((user-mail-address . "lane@somenull.com")
+                  (user-full-name . "Lane Wright")
+                  (mu4e-compose-signature . "- Lane\nWannabe H@x0rM@n")
+                  (smtpmail-smtp-server . "somenull.com")
+                  (smtpmail-smtp-service . 465)
+                  (smtpmail-stream-type . ssl)
+                  (mu4e-drafts-folder . "/drafts")
+                  (mu4e-sent-folder . "/sent")
+                  (mu4e-trash-folder . "/trash"))))))
+
+(setq message-send-mail-function 'smtpmail-send-it)
+
+(use-package org-mime
+  :ensure t)
+
+(setq org-mime-export-options '(:section-numbers nil
+                                :with-author nil
+                                :with-toc nil))
+
+(add-hook 'message-send-hook 'org-mime-htmlize)
