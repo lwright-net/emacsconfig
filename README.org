@@ -427,7 +427,7 @@ Probably a good idea to setup pgp keys to store passwords for =mbsync=.
             :name "somenull"
             :vars '((user-mail-address . "lane@somenull.com")
                     (user-full-name . "Lane Wright")
-                    (mu4e-compose-signature . "- Lane\nWannabe H@x0rM@n")
+                    ;;(mu4e-compose-signature . "- Lane\nWannabe H@x0rM@n")
                     (smtpmail-smtp-server . "somenull.com")
                     (smtpmail-smtp-service . 465)
                     (smtpmail-stream-type . ssl)
@@ -440,13 +440,37 @@ Probably a good idea to setup pgp keys to store passwords for =mbsync=.
   (use-package org-mime
     :ensure t)
 
-  (setq org-mime-export-options '(:section-numbers nil
-                                  :with-author nil
-                                  :with-toc nil))
+  ;;(setq org-mime-export-options '(:section-numbers nil
+  ;;                                :with-author nil
+  ;;                                :with-toc nil))
 
-  (add-hook 'message-send-hook 'org-mime-htmlize)
+  ;;(add-hook 'message-send-hook 'org-mime-htmlize)
 
 
     #+end_src
 
+** org-msg
+=org-msg= allows me to write an email in =org-mode=, and once the email is sent the email will
+be formatted in a friendly way to Outlook.
 
+#+begin_src emacs-lisp
+   (setq mail-user-agent 'mu4e-user-agent)
+   (use-package org-msg
+     :ensure t)
+   (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+         org-msg-startup "hidestars indent inlineimages"
+         org-msg-greeting-fmt "\nHi%s,\n\n"
+         org-msg-recipient-names '(("apen9uin@gmail.com" . "Lane"))
+         org-msg-greeting-name-limit 3
+         org-msg-default-alternatives '((new		. (text html))
+                                        (reply-to-html	. (text html))
+                                        (reply-to-text	. (text)))
+         org-msg-convert-citation t
+         org-msg-signature "
+
+  ,#+begin_signature
+  -------------------
+  ,*Lane*, wannabe h4x0rm4n
+  ,#+end_signature")
+  (org-msg-mode)
+#+end_src
