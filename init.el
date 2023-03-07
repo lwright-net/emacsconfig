@@ -349,3 +349,11 @@
 *Lane*, wannabe h4x0rm4n
 #+end_signature")
 (org-msg-mode)
+
+(use-package yasnippet)
+(use-package yasnippet-snippets)
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"))
+(yas-global-mode 1)
+(add-hook 'yas-minor-mode-hook (lambda ()
+                                      (yas-activate-extra-mode 'fundamental-mode)))

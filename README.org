@@ -474,3 +474,20 @@ be formatted in a friendly way to Outlook.
   ,#+end_signature")
   (org-msg-mode)
 #+end_src
+
+* yasnippet
+=yasnippet= is really useful. It allows you to type something simple and have it expand into somehting else.
+For example: I could program a snippet where when I type ~/class~ in a python buffer, it can expand to a full class
+definition. Additionally you can specify multipe 'cursor points' and use TAB to move between them.
+
+#+begin_src emacs-lisp
+
+  (use-package yasnippet)
+  (use-package yasnippet-snippets)
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets"))
+  (yas-global-mode 1)
+  (add-hook 'yas-minor-mode-hook (lambda ()
+                                        (yas-activate-extra-mode 'fundamental-mode)))
+
+#+end_src
